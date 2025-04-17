@@ -20,6 +20,6 @@ public class Post {
     private String slug;
     private boolean isPublished;
     private boolean isDeleted;
-    private Integer createdAt;
-    private Integer publishedAt;
+    private Long createdAt;
+    private Long publishedAt;
 }

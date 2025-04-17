@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.time.Instant;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +36,7 @@ public class PostService {
 
     public Post createPost(Post post) {
         try {
+            post.setCreatedAt(Instant.now().getEpochSecond());
             return postRepository.save(post);
         } catch (DataIntegrityViolationException e) {
             Throwable root = e.getRootCause();
