@@ -60,6 +60,7 @@ public class PostService {
                     "No post with slug: " + slug
             );
         }
+        newPost.setCreatedAt(savedPost.getCreatedAt());
         newPost.setId(savedPost.getId());
         return postRepository.save(newPost);
     }
