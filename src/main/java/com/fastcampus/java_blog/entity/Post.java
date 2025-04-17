@@ -1,9 +1,17 @@
 package com.fastcampus.java_blog.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
+    @Id
     private Integer id;
     private String title;
     private String body;
@@ -12,10 +20,4 @@ public class Post {
     private boolean isDeleted;
     private Integer createdAt;
     private Integer publishedAt;
-
-    public Post(Integer id, String title, String slug) {
-        this.id = id;
-        this.title = title;
-        this.slug = slug;
-    }
 }
