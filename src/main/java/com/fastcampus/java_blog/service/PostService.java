@@ -2,7 +2,6 @@ package com.fastcampus.java_blog.service;
 
 import com.fastcampus.java_blog.entity.Post;
 import com.fastcampus.java_blog.repository.PostRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +20,11 @@ public class PostService {
     PostRepository postRepository;
 
     public Iterable<Post> getPosts() {
-        return postRepository.findAll();
+        return postRepository.findAllByIsDeletedFalse();
     }
 
     public Post getPostBySlug(String slug) {
-        return postRepository.findBySlug(slug)
+        return postRepository.findBySlugAndIsDeleted(slug, false)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
@@ -53,7 +52,7 @@ public class PostService {
     }
 
     public Post updatePostBySlug(String slug, Post newPost) {
-        Post savedPost = postRepository.findBySlug(slug).orElse(null);
+        Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
         if(savedPost == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -66,14 +65,15 @@ public class PostService {
     }
 
     public void deletePostBySlug(String slug) {
-        Post post = postRepository.findBySlug(slug)
+        Post post = postRepository.findBySlugAndIsDeleted(slug, false)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "No post with slug: " + slug
                 ));
 
         try {
-            postRepository.delete(post);
+            post.setDeleted(true);
+            postRepository.save(post);
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
@@ -82,5 +82,32 @@ public class PostService {
             );
         }
 
+    }
+
+    public void publishPostBySlug(String slug) {
+        Post post = postRepository.findBySlugAndIsDeleted(slug, false)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No post with slug: " + slug
+                ));
+
+        if (post.isPublished()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Post already published"
+            );
+        }
+
+        try {
+            post.setPublished(true);
+            post.setPublishedAt(Instant.now().getEpochSecond());
+            postRepository.save(post);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cannot publish post due to database constraints",
+                    e
+            );
+        }
     }
 }

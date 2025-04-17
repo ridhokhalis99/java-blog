@@ -42,4 +42,11 @@ public class PostController {
         return ResponseEntity
                 .ok(Collections.singletonMap("message", "Post deleted successfully"));
     }
+
+    @PostMapping("/{slug}/publish")
+    public ResponseEntity<Map<String, String>> publishPostBySlug(@PathVariable String slug) {
+        postService.publishPostBySlug(slug);
+        return ResponseEntity
+                .ok(Collections.singletonMap("message", "Post published successfully"));
+    }
 }
