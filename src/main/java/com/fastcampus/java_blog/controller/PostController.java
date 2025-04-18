@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
     PostService postService;
 
-    @GetMapping("/")
+    @GetMapping
     public Iterable<Post> getPosts() {
         return postService.getPosts();
     }
@@ -26,7 +26,7 @@ public class PostController {
         return postService.getPostBySlug(slug);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public Post createPost(@RequestBody Post post) {
         return postService.createPost(post);
     }

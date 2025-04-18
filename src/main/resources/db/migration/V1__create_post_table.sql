@@ -8,4 +8,4 @@ CREATE TABLE post (
     updated_at BIGINT,
     created_at BIGINT NOT NULL,
     published_at BIGINT
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
