@@ -1,7 +1,8 @@
 package com.fastcampus.java_blog.controller;
 
-import com.fastcampus.java_blog.dto.CreatePostDTO;
+import com.fastcampus.java_blog.request.CreatePostRequest;
 import com.fastcampus.java_blog.entity.Post;
+import com.fastcampus.java_blog.response.PostResponse;
 import com.fastcampus.java_blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +24,17 @@ public class PostController {
     }
 
     @GetMapping("/{slug}")
-    public Post getPostBySlug(@PathVariable String slug) {
+    public PostResponse getPostBySlug(@PathVariable String slug) {
         return postService.getPostBySlug(slug);
     }
 
     @PostMapping
-    public Post createPost(@RequestBody CreatePostDTO postRequest) {
-        return postService.createPost(postRequest);
+    public PostResponse createPost(@RequestBody CreatePostRequest request) {
+        return postService.createPost(request);
     }
 
     @PutMapping("/{slug}")
-    public Post updatePostBySlug(@PathVariable String slug, @RequestBody Post post) {
+    public PostResponse updatePostBySlug(@PathVariable String slug, @RequestBody Post post) {
         return postService.updatePostBySlug(slug, post);
     }
 

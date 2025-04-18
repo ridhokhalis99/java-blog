@@ -1,9 +1,10 @@
 package com.fastcampus.java_blog.service;
 
-import com.fastcampus.java_blog.dto.CreatePostDTO;
+import com.fastcampus.java_blog.request.CreatePostRequest;
 import com.fastcampus.java_blog.entity.Post;
 import com.fastcampus.java_blog.mapper.PostMapper;
 import com.fastcampus.java_blog.repository.PostRepository;
+import com.fastcampus.java_blog.response.PostResponse;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +30,23 @@ public class PostService {
         return postRepository.findAllByIsDeletedFalse();
     }
 
-    public Post getPostBySlug(String slug) {
-        return postRepository.findBySlugAndIsDeleted(slug, false)
+    public PostResponse getPostBySlug(String slug) {
+        Post post = postRepository.findBySlugAndIsDeleted(slug, false)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
                                 "No post with slug: " + slug
                         )
                 );
+        return postMapper.toResponse(post);
     }
 
-    public Post createPost(CreatePostDTO postRequest) {
+    public PostResponse createPost(CreatePostRequest request) {
         try {
-            Post post = postMapper.toEntity(postRequest);
+            Post post = postMapper.toEntity(request);
             post.setCreatedAt(Instant.now().getEpochSecond());
-            return postRepository.save(post);
+            postRepository.save(post);
+            return postMapper.toResponse(post);
         } catch (DataIntegrityViolationException e) {
             Throwable root = e.getRootCause();
             String message = "Constraint violation";
@@ -58,7 +61,7 @@ public class PostService {
         }
     }
 
-    public Post updatePostBySlug(String slug, Post newPost) {
+    public PostResponse updatePostBySlug(String slug, Post newPost) {
         Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
         if(savedPost == null) {
             throw new ResponseStatusException(
@@ -68,7 +71,8 @@ public class PostService {
         }
         newPost.setCreatedAt(savedPost.getCreatedAt());
         newPost.setId(savedPost.getId());
-        return postRepository.save(newPost);
+        Post post = postRepository.save(newPost);
+        return postMapper.toResponse(post);
     }
 
     public void deletePostBySlug(String slug) {

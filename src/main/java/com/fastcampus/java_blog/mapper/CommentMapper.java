@@ -1,20 +1,19 @@
     package com.fastcampus.java_blog.mapper;
 
-    import com.fastcampus.java_blog.dto.CommentResponseDTO;
-    import com.fastcampus.java_blog.dto.CreateCommentDTO;
+    import com.fastcampus.java_blog.repository.PostRepository;
+    import com.fastcampus.java_blog.response.CommentResponse;
+    import com.fastcampus.java_blog.request.CreateCommentRequest;
     import com.fastcampus.java_blog.entity.Comment;
-    import com.fastcampus.java_blog.entity.Post;
-    import com.fastcampus.java_blog.service.PostService;
     import org.mapstruct.Context;
     import org.mapstruct.InheritConfiguration;
     import org.mapstruct.Mapper;
     import org.mapstruct.Mapping;
 
-    @Mapper(componentModel = "spring")
+    @Mapper(componentModel = "spring", uses = PostMapper.class)
     public interface CommentMapper {
-        @Mapping(target = "post", expression = "java(postService.getPostBySlug(dto.getPostSlug()))")
-        Comment toEntity(CreateCommentDTO dto, @Context PostService postService);
+        @Mapping(target = "post", expression = "java(postRepository.findBySlug(dto.getPostSlug()))")
+        Comment toEntity(CreateCommentRequest dto, @Context PostRepository postRepository);
 
         @InheritConfiguration
-        CommentResponseDTO toDtoResponse(Comment comment);
+        CommentResponse toResponse(Comment comment);
     }

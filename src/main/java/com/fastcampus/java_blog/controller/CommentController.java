@@ -1,8 +1,8 @@
 package com.fastcampus.java_blog.controller;
 
-import com.fastcampus.java_blog.dto.CreateCommentDTO;
+import com.fastcampus.java_blog.request.CreateCommentRequest;
 import com.fastcampus.java_blog.entity.Comment;
-import com.fastcampus.java_blog.entity.Post;
+import com.fastcampus.java_blog.response.CommentResponse;
 import com.fastcampus.java_blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public Comment createComment(@RequestBody CreateCommentDTO dto){
-        return commentService.createComment(dto);
+    public CommentResponse createComment(@RequestBody CreateCommentRequest request){
+        return commentService.createComment(request);
     }
 }
