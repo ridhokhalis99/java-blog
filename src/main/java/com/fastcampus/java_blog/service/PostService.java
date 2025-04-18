@@ -1,6 +1,8 @@
 package com.fastcampus.java_blog.service;
 
+import com.fastcampus.java_blog.dto.CreatePostDTO;
 import com.fastcampus.java_blog.entity.Post;
+import com.fastcampus.java_blog.mapper.PostMapper;
 import com.fastcampus.java_blog.repository.PostRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,8 +18,12 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostService {
+
     @Autowired
     PostRepository postRepository;
+
+    @Autowired
+    PostMapper postMapper;
 
     public Iterable<Post> getPosts() {
         return postRepository.findAllByIsDeletedFalse();
@@ -33,8 +39,9 @@ public class PostService {
                 );
     }
 
-    public Post createPost(Post post) {
+    public Post createPost(CreatePostDTO postRequest) {
         try {
+            Post post = postMapper.toEntity(postRequest);
             post.setCreatedAt(Instant.now().getEpochSecond());
             return postRepository.save(post);
         } catch (DataIntegrityViolationException e) {

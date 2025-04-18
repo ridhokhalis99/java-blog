@@ -1,5 +1,6 @@
 package com.fastcampus.java_blog.controller;
 
+import com.fastcampus.java_blog.dto.CreatePostDTO;
 import com.fastcampus.java_blog.entity.Post;
 import com.fastcampus.java_blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postService.createPost(post);
+    public Post createPost(@RequestBody CreatePostDTO postRequest) {
+        return postService.createPost(postRequest);
     }
 
     @PutMapping("/{slug}")
