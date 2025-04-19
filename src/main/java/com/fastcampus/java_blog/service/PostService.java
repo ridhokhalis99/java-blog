@@ -5,16 +5,23 @@ import com.fastcampus.java_blog.request.CreatePostRequest;
 import com.fastcampus.java_blog.entity.Post;
 import com.fastcampus.java_blog.mapper.PostMapper;
 import com.fastcampus.java_blog.repository.PostRepository;
+import com.fastcampus.java_blog.response.PaginatedResponse;
 import com.fastcampus.java_blog.response.PostResponse;
+import com.fastcampus.java_blog.response.PostSummaryResponse;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -27,8 +34,21 @@ public class PostService {
     @Autowired
     PostMapper postMapper;
 
-    public Iterable<Post> getPosts() {
-        return postRepository.findAllByIsDeletedFalse();
+    public PaginatedResponse<PostSummaryResponse> getPosts(Pageable pageable) {
+        Page<Post> page = postRepository.findAllByIsDeletedFalse(pageable);
+
+        List<PostSummaryResponse> content = page.getContent()
+                .stream()
+                .map(postMapper::toSummaryResponse)
+                .toList();
+
+        return new PaginatedResponse<>(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
     public PostResponse getPostBySlug(String slug) {

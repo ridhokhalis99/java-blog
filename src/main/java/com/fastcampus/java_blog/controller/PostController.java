@@ -2,10 +2,15 @@ package com.fastcampus.java_blog.controller;
 
 import com.fastcampus.java_blog.request.CreatePostRequest;
 import com.fastcampus.java_blog.entity.Post;
+import com.fastcampus.java_blog.response.PaginatedResponse;
 import com.fastcampus.java_blog.response.PostResponse;
+import com.fastcampus.java_blog.response.PostSummaryResponse;
 import com.fastcampus.java_blog.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +25,10 @@ public class PostController {
     PostService postService;
 
     @GetMapping
-    public Iterable<Post> getPosts() {
-        return postService.getPosts();
+    public PaginatedResponse<PostSummaryResponse> getPosts(
+            @PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        return postService.getPosts(pageable);
     }
 
     @GetMapping("/{slug}")

@@ -5,6 +5,7 @@ import com.fastcampus.java_blog.request.CreatePostRequest;
 import com.fastcampus.java_blog.response.CommentResponse;
 import com.fastcampus.java_blog.response.PostResponse;
 import com.fastcampus.java_blog.entity.Post;
+import com.fastcampus.java_blog.response.PostSummaryResponse;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +16,9 @@ public interface PostMapper {
 
     @InheritConfiguration
     PostResponse toResponse(Post post);
+
+    @InheritConfiguration
+    PostSummaryResponse toSummaryResponse(Post post);
 
     @Mapping(target = "post", ignore = true)
     CommentResponse toCommentResponse(Comment comment);
