@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentResponse {
-    private String name;
-    private String email;
+public class PostSummaryResponse {
+    private String title;
+    private String slug;
     private String body;
-    private PostSummaryResponse post;
 }
