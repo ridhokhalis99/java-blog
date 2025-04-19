@@ -1,5 +1,6 @@
 package com.fastcampus.java_blog.service;
 
+import com.fastcampus.java_blog.exception.PostNotFoundException;
 import com.fastcampus.java_blog.request.CreatePostRequest;
 import com.fastcampus.java_blog.entity.Post;
 import com.fastcampus.java_blog.mapper.PostMapper;
@@ -32,12 +33,7 @@ public class PostService {
 
     public PostResponse getPostBySlug(String slug) {
         Post post = postRepository.findBySlugAndIsDeleted(slug, false)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "No post with slug: " + slug
-                        )
-                );
+                .orElseThrow(() -> new PostNotFoundException(slug));
         return postMapper.toResponse(post);
     }
 
@@ -62,13 +58,8 @@ public class PostService {
     }
 
     public PostResponse updatePostBySlug(String slug, Post newPost) {
-        Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
-        if(savedPost == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No post with slug: " + slug
-            );
-        }
+        Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false)
+                .orElseThrow(() -> new PostNotFoundException(slug));
         newPost.setCreatedAt(savedPost.getCreatedAt());
         newPost.setId(savedPost.getId());
         Post post = postRepository.save(newPost);
@@ -77,11 +68,7 @@ public class PostService {
 
     public void deletePostBySlug(String slug) {
         Post post = postRepository.findBySlugAndIsDeleted(slug, false)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "No post with slug: " + slug
-                ));
-
+                .orElseThrow(() -> new PostNotFoundException(slug));
         try {
             post.setDeleted(true);
             postRepository.save(post);
@@ -97,11 +84,7 @@ public class PostService {
 
     public void publishPostBySlug(String slug) {
         Post post = postRepository.findBySlugAndIsDeleted(slug, false)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "No post with slug: " + slug
-                ));
-
+                .orElseThrow(() -> new PostNotFoundException(slug));
         if (post.isPublished()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
