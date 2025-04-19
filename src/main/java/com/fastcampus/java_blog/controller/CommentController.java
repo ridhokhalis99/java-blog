@@ -4,6 +4,7 @@ import com.fastcampus.java_blog.request.CreateCommentRequest;
 import com.fastcampus.java_blog.entity.Comment;
 import com.fastcampus.java_blog.response.CommentResponse;
 import com.fastcampus.java_blog.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public CommentResponse createComment(@RequestBody CreateCommentRequest request){
+    public CommentResponse createComment(@Valid @RequestBody CreateCommentRequest request){
         return commentService.createComment(request);
     }
 }

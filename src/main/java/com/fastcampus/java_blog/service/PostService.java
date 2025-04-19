@@ -38,20 +38,18 @@ public class PostService {
     }
 
     public PostResponse createPost(CreatePostRequest request) {
+        if (postRepository.existsBySlug(request.getSlug()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slug must be unique");
+
         try {
             Post post = postMapper.toEntity(request);
             post.setCreatedAt(Instant.now().getEpochSecond());
             postRepository.save(post);
             return postMapper.toResponse(post);
-        } catch (DataIntegrityViolationException e) {
-            Throwable root = e.getRootCause();
-            String message = "Constraint violation";
-            if (root != null && root.getMessage().contains("slug")) {
-                message = "Slug must be unique";
-            }
+        } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    message,
+                    e.getMessage(),
                     e
             );
         }

@@ -9,4 +9,5 @@ public interface PostRepository extends CrudRepository<Post, Integer> {
     Post findBySlug(String slug);
     Optional<Post> findBySlugAndIsDeleted(String slug, boolean isDeleted);
     Iterable<Post> findAllByIsDeletedFalse();
+    boolean existsBySlug(String slug);
 }

@@ -9,7 +9,9 @@ import com.fastcampus.java_blog.response.CommentResponse;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 
@@ -31,9 +33,18 @@ public class CommentService {
     }
 
     public CommentResponse createComment(CreateCommentRequest request) {
-        Comment comment = commentMapper.toEntity(request, postRepository);
-        comment.setCreatedAt(Instant.now().getEpochSecond());
-        commentRepository.save(comment);
-        return commentMapper.toResponse(comment);
+        try {
+            Comment comment = commentMapper.toEntity(request, postRepository);
+            comment.setCreatedAt(Instant.now().getEpochSecond());
+            commentRepository.save(comment);
+            return commentMapper.toResponse(comment);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e
+            );
+        }
+
     }
 }
