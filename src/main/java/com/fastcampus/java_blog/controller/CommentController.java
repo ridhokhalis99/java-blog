@@ -25,4 +25,9 @@ public class CommentController {
     public CommentResponse createComment(@Valid @RequestBody CreateCommentRequest request){
         return commentService.createComment(request);
     }
+
+    @GetMapping("/{id}")
+    public CommentResponse getCommentById(@PathVariable Integer id){
+        return commentService.getCommentById(id);
+    }
 }

@@ -1,5 +1,6 @@
 package com.fastcampus.java_blog.service;
 
+import com.fastcampus.java_blog.exception.CommentNotFoundException;
 import com.fastcampus.java_blog.request.CreateCommentRequest;
 import com.fastcampus.java_blog.entity.Comment;
 import com.fastcampus.java_blog.mapper.CommentMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -45,5 +47,12 @@ public class CommentService {
             );
         }
 
+    }
+
+    public CommentResponse getCommentById(Integer id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new CommentNotFoundException(id)
+        );
+        return commentMapper.toResponse(comment);
     }
 }
