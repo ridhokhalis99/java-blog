@@ -35,7 +35,6 @@ public class CommentService {
     public CommentResponse createComment(CreateCommentRequest request) {
         try {
             Comment comment = commentMapper.toEntity(request, postRepository);
-            comment.setCreatedAt(Instant.now().getEpochSecond());
             commentRepository.save(comment);
             return commentMapper.toResponse(comment);
         } catch (Exception e) {

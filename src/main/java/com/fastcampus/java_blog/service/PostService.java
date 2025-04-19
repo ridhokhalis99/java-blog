@@ -43,7 +43,6 @@ public class PostService {
 
         try {
             Post post = postMapper.toEntity(request);
-            post.setCreatedAt(Instant.now().getEpochSecond());
             postRepository.save(post);
             return postMapper.toResponse(post);
         } catch (Exception e) {
@@ -58,7 +57,6 @@ public class PostService {
     public PostResponse updatePostBySlug(String slug, Post newPost) {
         Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false)
                 .orElseThrow(() -> new PostNotFoundException(slug));
-        newPost.setCreatedAt(savedPost.getCreatedAt());
         newPost.setId(savedPost.getId());
         Post post = postRepository.save(newPost);
         return postMapper.toResponse(post);
